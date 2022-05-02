@@ -8,6 +8,7 @@ OneWire oneWire(ONE_WIRE_BUS); // 建立 OneWire 物件
 DallasTemperature DS18B20(&oneWire); // 建立 DS18B20 物件
 
 void setup(void){
+  pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
   DS18B20.begin();
   Serial.begin(9600);
@@ -20,10 +21,15 @@ void loop(void){
   temperature = DS18B20.getTempCByIndex(0);  //讀取第一顆 DS18B20 的溫度
   Serial.print(temperature);
   Serial.print("\n");
-  if (temperature > 60) {
-     digitalWrite(7, LOW);
-  } else {
+  if (temperature < 0 || temperature > 65) {
+     // Normal Close 關閉通路
      digitalWrite(7, HIGH);
+     digitalWrite(6, HIGH);
+  } else if (temperature < 62) {
+     // Normal Open 打開通路
+     digitalWrite(7, LOW);
+     digitalWrite(6, LOW);
   }
-  delay(1000);
+  delay(3000);
 }
+
